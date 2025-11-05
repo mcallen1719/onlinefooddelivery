@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>TastyTrail Restaurant App | GHS</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f46a25", // Your main accent color
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#221610",
+                        "text-light-primary": "#181311",
+                        "text-light-secondary": "#8a6e60",
+                        "text-dark-primary": "#f8f6f5",
+                        "text-dark-secondary": "#e6dfdb",
+                        "neutral-100": "#f5f1f0",
+                        "neutral-900": "#181311",
+                        "neutral-600": "#8a6e60"
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Material Icons setup for stars (0: outline, 1: filled) */
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+        .star-filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            min-height: 10vh;
+        }
+        .hidden {
+            display: none !important;
+        }
+        /* Style for the sticky top bar */
+        .sticky-menu-header {
+            top: 0;
+            z-index: 10;
+        }
+        
+        /* === ANIMATION CSS === */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px); /* Moves up 8 pixels */
+            }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite; /* 4 seconds long, smooth start/end, loops forever */
+        }
+
+        /* Custom scrollbar for menu categories */
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        .scroll-container {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* === NEW GREEN TICK STYLES === */
+        /* Applied to the parent div by JS to trigger green coloring */
+        .status-done .status-circle {
+            background-color: #10B981; /* Tailwind green-500 */
+            border-color: #10B981;
+            color: white;
+            font-variation-settings: 'FILL' 1; /* Fills the checkmark icon */
+        }
+        .status-done .status-line {
+            background-color: #10B981; /* Tailwind green-500 */
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display">
+
+    <div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden text-text-light-primary dark:text-text-dark-primary">
+
+        <div id="onboarding-view" class="view w-full h-full flex flex-col">
+            
+            <div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between">
+                <div class="flex items-center text-primary">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">restaurant_menu</span>
+                    <p class="text-xl font-bold ml-1">DineCraft</p>
+                </div>
+                <div class="flex w-12 items-center justify-end">
+                    <p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-bold leading-normal tracking-[0.015em] shrink-0 cursor-pointer" onclick="showView('dashboard-view')">
+                        Log In
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex-grow flex flex-col justify-between">
+                <div class="relative w-full overflow-hidden">
+                    
+                    <div class="relative w-full aspect-[2/1] sm:aspect-[3/1] flex items-center justify-center pt-8 pb-12 
+                        bg-cover bg-center bg-no-repeat" 
+                        style='background-image: url("Orange and Green Collage Dish.svg");'>
+                        
+                        <div class="absolute inset-0 bg-black/20 dark:bg-black/30 z-0"></div>
+                        
+                         <div class="absolute bottom-4 left-0 right-0 text-center z-20 px-4 pt-12">
+                            <h1 class="text-white text-3xl font-bold leading-snug">
+                               Bringing Big Flavor to Every Plate
+                            </h1>
+                            <p class="text-white/80 text-base font-normal mt-1">
+                                Food is just a click away!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center p-4">
+                    <h2 class="text-text-light-primary dark:text-text-dark-primary text-xl font-bold mt-4 mb-6 text-center">
+                        Order takeaway even faster!
+                    </h2>
+                    
+                    <div class="flex justify-center gap-4 mb-8">
+                        <div class="w-24 h-48 sm:w-32 sm:h-64 rounded-2xl shadow-xl border-4 border-gray-800 bg-cover bg-center overflow-hidden animate-float" 
+                             style='background-image: url("Dark Red and Light Yellow.jpg"); animation-delay: 0.2s;'>
+                        </div>
+                        
+                        <div class="w-24 h-48 sm:w-32 sm:h-64 rounded-2xl shadow-xl border-4 border-gray-800 bg-cover bg-center overflow-hidden translate-y-2 animate-float" 
+                             style='background-image: url("White and Green Burger.jpg");'>
+                        </div>
+                        
+                        <div class="w-24 h-48 sm:w-32 sm:h-64 rounded-2xl shadow-xl border-4 border-gray-800 bg-cover bg-center overflow-hidden animate-float" 
+                             style='background-image: url("Say Cheese Pizza Flashes.jpg"); animation-delay: 0.4s;'>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button class="flex items-center gap-2 rounded-lg bg-black text-white px-4 py-2 font-medium">
+                            <span class="material-symbols-outlined text-lg">code</span>
+                            App Store
+                        </button>
+                        <button class="flex items-center gap-2 rounded-lg bg-black text-white px-4 py-2 font-medium">
+                            <span class="material-symbols-outlined text-lg">android</span>
+                            Google Play
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="flex justify-center mt-auto pb-4 pt-8">
+                    <div class="flex flex-1 gap-3 max-w-[480px] flex-col items-stretch px-4 py-3">
+                        <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] w-full" onclick="showView('signup-view')">
+                            <span class="truncate">Create Account</span>
+                        </button>
+                        <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-background-light dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-normal tracking-[0.015em] w-full border border-primary/20 dark:border-primary/30" onclick="showView('dashboard-view')">
+                            <span class="truncate">Continue as Guest</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center text-xs text-text-light-secondary dark:text-text-dark-secondary pb-4">
+                </div>
+            </div>
+        </div>
+        
+        <div id="signup-view" class="view hidden w-full h-full">
+            <div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display group/design-root overflow-x-hidden">
+                <div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+                    <div class="text-neutral-900 dark:text-neutral-100 flex size-12 shrink-0 items-center justify-start">
+                        <span class="material-symbols-outlined text-2xl cursor-pointer" onclick="showView('onboarding-view')">arrow_back</span>
+                    </div>
+                    <h2 class="text-neutral-900 dark:text-neutral-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Create Your Account</h2>
+                    <div class="flex size-12 shrink-0 items-center"></div>
+                </div>
+
+                <div class="flex flex-col space-y-6 p-6 flex-grow">
+                    <input class="w-full rounded-lg border border-neutral-100 dark:border-neutral-600 bg-background-light dark:bg-background-dark px-4 py-3 text-neutral-900 dark:text-neutral-100 placeholder-neutral-600 dark:placeholder-neutral-100/50 focus:border-primary focus:ring-primary" type="text" placeholder="Full Name" required/>
+                    <input class="w-full rounded-lg border border-neutral-100 dark:border-neutral-600 bg-background-light dark:bg-background-dark px-4 py-3 text-neutral-900 dark:text-neutral-100 placeholder-neutral-600 dark:placeholder-neutral-100/50 focus:border-primary focus:ring-primary" type="email" placeholder="Email Address" required/>
+                    <input class="w-full rounded-lg border border-neutral-100 dark:border-neutral-600 bg-background-light dark:bg-background-dark px-4 py-3 text-neutral-900 dark:text-neutral-100 placeholder-neutral-600 dark:placeholder-neutral-100/50 focus:border-primary focus:ring-primary" type="password" placeholder="Password" required/>
+                    
+                    <div class="pt-4 flex items-center gap-2">
+                        <input id="terms-checkbox" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary dark:border-gray-700 dark:bg-background-dark">
+                        <label for="terms-checkbox" class="text-sm text-neutral-600 dark:text-neutral-100/70">
+                            I agree to the <a href="#" class="text-primary font-medium">Terms</a> and <a href="#" class="text-primary font-medium">Privacy Policy</a>.
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="sticky bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark p-4 border-t border-neutral-100 dark:border-white/10">
+                    <button class="w-full rounded-full bg-primary py-4 text-center text-lg font-bold text-white" onclick="handleSignUp()">
+                        Sign Up
+                    </button>
+                    <p class="text-center text-sm mt-3 text-neutral-600 dark:text-neutral-100/70">
+                        Already have an account? <a href="#" class="text-primary font-medium" onclick="showView('onboarding-view')">Log In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard-view" class="view hidden w-full h-full flex-col">
+            <div class="sticky-menu-header bg-background-light dark:bg-background-dark pt-4 pb-2 px-4 shadow-sm border-b border-neutral-100 dark:border-neutral-800">
+                <div class="flex items-center justify-between">
+                    <div class="flex size-10 shrink-0 items-center justify-center text-primary">
+                        <span class="material-symbols-outlined" style="font-size: 28px;">restaurant_menu</span>
+                    </div>
+                    <h1 class="text-xl font-bold">TastyTrail Menu</h1>
+                    <div class="flex size-10 shrink-0 items-center justify-center text-primary cursor-pointer" onclick="showView('onboarding-view')">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">logout</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-xl text-neutral-600 dark:text-text-dark-secondary">search</span>
+                        <input class="w-full rounded-full border border-neutral-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 pl-10 pr-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-neutral-600 dark:placeholder-neutral-100/50 text-sm focus:border-primary focus:ring-primary" type="text" placeholder="Search for Jollof, Pizza, or Drinks..." />
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800">
+                    <h2 class="text-xl font-bold">The Continental Spot</h2>
+                    <div class="flex items-center gap-4 mt-2 text-sm text-text-light-secondary dark:text-text-dark-secondary">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base text-yellow-500 star-filled">star</span> 4.7 (1.2K)</span>
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">timer</span> ~1 min</span>
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-base">directions_bike</span> GHS <span id="dashboard-delivery-fee">10.00</span> Delivery</span>
+                    </div>
+                    <p class="text-sm mt-3">
+                        Experience the best of Ghanaian staples and Continental classics, freshly prepared for fast delivery.
+                        <span id="full-description-content" class="hidden text-xs mt-1 block">We use the freshest local ingredients to ensure every bite is a TastyTrail experience. Try our signature Banku & Tilapia!</span>
+                        <a id="read-more-link" class="text-primary text-xs font-medium cursor-pointer" onclick="toggleDescription()">Read more</a>
+                    </p>
+                </div>
+                
+                <div id="menu-categories" class="scroll-container flex gap-3 overflow-x-auto py-3">
+                    </div>
+            </div>
+
+            <div id="menu-items-list" class="flex-grow p-4 space-y-6">
+                </div>
+
+            <div id="cart-c2a" class="hidden sticky bottom-0 left-0 right-0 bg-primary p-4 shadow-xl z-20">
+                <button class="flex w-full items-center justify-between rounded-lg bg-white text-primary px-5 py-3 font-bold text-lg" onclick="showView('checkout-view')">
+                    <span class="material-symbols-outlined text-xl">shopping_cart</span>
+                    <span class="flex-1 text-center">View Cart (<span id="c2a-item-count">0</span> items)</span>
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="checkout-view" class="view hidden w-full h-full flex-col">
+            <div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-neutral-100 dark:border-neutral-800">
+                <div class="text-neutral-900 dark:text-neutral-100 flex size-12 shrink-0 items-center justify-start">
+                    <span class="material-symbols-outlined text-2xl cursor-pointer" onclick="showView('dashboard-view')">arrow_back</span>
+                </div>
+                <h2 class="text-neutral-900 dark:text-neutral-100 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Checkout (<span id="cart-count">0</span> Items)</h2>
+                <div class="flex size-12 shrink-0 items-center"></div>
+            </div>
+
+            <div class="flex-grow p-4 space-y-6 overflow-y-auto">
+                <div class="p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800 space-y-4">
+                    <h3 class="text-lg font-bold border-b pb-2 border-neutral-100 dark:border-neutral-800">Delivery Information</h3>
+                    <input id="customer-name" class="w-full rounded-lg border border-neutral-100 dark:border-neutral-600 bg-background-light dark:bg-background-dark px-4 py-3 text-sm" type="text" placeholder="Your Full Name" value="Guest User" required/>
+                    <input id="customer-address" class="w-full rounded-lg border border-neutral-100 dark:border-neutral-600 bg-background-light dark:bg-background-dark px-4 py-3 text-sm" type="text" placeholder="Street Address (e.g. 10 Accra High St.)" value="123 Labadi Road" required/>
+                    <select id="customer-location" class="w-full rounded-lg border border-neutral-100 dark:border-neutral-600 bg-background-light dark:bg-background-dark px-4 py-3 text-sm text-neutral-900 dark:text-neutral-100" required>
+                        <option value="">Select Location / City</option>
+                        <option value="Accra" selected>Accra</option>
+                        <option value="Kumasi">Kumasi</option>
+                        <option value="Takoradi">Takoradi</option>
+                    </select>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800 space-y-3">
+                    <h3 class="text-lg font-bold border-b pb-2 border-neutral-100 dark:border-neutral-800">Your Order</h3>
+                    <div id="checkout-cart-summary" class="space-y-2">
+                        </div>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800 space-y-3">
+                    <h3 class="text-lg font-bold border-b pb-2 border-neutral-100 dark:border-neutral-800">Payment Method</h3>
+                    <div class="flex flex-col space-y-2">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="payment-method" value="COD" checked onchange="updatePaymentText('COD')" class="form-radio h-4 w-4 text-primary border-neutral-300 focus:ring-primary">
+                            <span class="text-base font-medium">Cash On Delivery (COD)</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="radio" name="payment-method" value="MOMO" onchange="updatePaymentText('MOMO')" class="form-radio h-4 w-4 text-primary border-neutral-300 focus:ring-primary">
+                            <span class="text-base font-medium">Mobile Money (MOMO) / Card</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800 space-y-2 text-base">
+                    <div id="summary-discount" class="hidden flex justify-between text-red-600">
+                        <span>Combo Discount (20%):</span>
+                        <span id="summary-discount-amount" class="font-medium">- GHS 0.00</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2 border-neutral-100 dark:border-neutral-800">
+                        <span>Subtotal:</span>
+                        <span id="summary-subtotal" class="font-medium">GHS 0.00</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2 border-neutral-100 dark:border-neutral-800">
+                        <span>Delivery Fee:</span>
+                        <span id="summary-delivery-fee" class="font-medium">GHS 10.00</span>
+                    </div>
+                    <div class="flex justify-between pt-2 text-xl font-bold text-primary">
+                        <span>Total:</span>
+                        <span id="summary-total">GHS 10.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sticky bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark p-4 border-t border-neutral-100 dark:border-white/10">
+                <button id="place-order-button-text" class="w-full rounded-full bg-primary py-4 text-center text-lg font-bold text-white transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed" onclick="handleOrderPlacement()">
+                    Place Order - GHS 0.00 (COD)
+                </button>
+            </div>
+        </div>
+
+        <div id="order-tracking-view" class="view hidden w-full h-full flex-col">
+            <div class="flex items-center bg-primary p-4 pb-2 justify-between sticky top-0 z-10 text-white">
+                <div class="flex size-12 shrink-0 items-center justify-start">
+                    <span class="material-symbols-outlined text-2xl cursor-pointer" onclick="showView('dashboard-view')">arrow_back</span>
+                </div>
+                <h2 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Tracking Order <span id="tracking-order-id">#ORD-XXXXXX</span></h2>
+                <div class="flex size-12 shrink-0 items-center"></div>
+            </div>
+
+            <div class="flex-grow p-4 space-y-6 overflow-y-auto">
+                
+                <div class="p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800 space-y-3 text-center">
+                    <p class="text-sm font-medium text-primary">Your order is currently at:</p>
+                    <h3 id="tracking-status-text" class="text-2xl font-bold">Order Confirmed</h3>
+                    <p id="tracking-delivery-time" class="text-lg text-text-light-secondary dark:text-text-dark-secondary">Estimated Arrival: ~60 seconds (Simulated)</p>
+                </div>
+                
+                <div id="driver-details-box" class="hidden p-4 bg-primary/10 dark:bg-primary/20 rounded-xl shadow-md border border-primary/20 space-y-3">
+                    <h3 class="text-lg font-bold text-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-2xl">directions_bike</span>
+                        Your Delivery Rider
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div class="font-medium">Driver:</div>
+                        <div class="font-bold text-text-light-primary dark:text-text-dark-primary" id="driver-name">N/A</div>
+                        <div class="font-medium">Bike:</div>
+                        <div class="font-bold text-text-light-primary dark:text-text-dark-primary" id="bike-color">N/A</div>
+                        <div class="font-medium">Plate:</div>
+                        <div class="font-bold text-text-light-primary dark:text-text-dark-primary" id="plate-number">N/A</div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800">
+                    <h3 class="text-lg font-bold mb-4">Delivery Timeline</h3>
+                    <div class="flex flex-col space-y-4 relative">
+                        
+                        <div id="status-confirm" class="flex items-start gap-4 text-text-light-secondary dark:text-text-dark-secondary">
+                            <div class="relative flex flex-col items-center">
+                                <div class="status-circle size-8 border-2 border-primary/50 text-primary rounded-full flex items-center justify-center bg-white dark:bg-neutral-900 z-10 transition-all duration-500">
+                                    <span class="material-symbols-outlined text-base">check</span>
+                                </div>
+                                <div class="status-line h-14 w-0.5 bg-neutral-200 dark:bg-neutral-700 transition-all duration-500"></div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-lg">Order Confirmed</p>
+                                <p class="text-sm">We've received your order and are checking stock.</p>
+                            </div>
+                        </div>
+
+                        <div id="status-prep" class="flex items-start gap-4 text-text-light-secondary dark:text-text-dark-secondary">
+                            <div class="relative flex flex-col items-center">
+                                <div class="status-circle size-8 border-2 border-primary/50 text-primary rounded-full flex items-center justify-center bg-white dark:bg-neutral-900 z-10 transition-all duration-500">
+                                    <span class="material-symbols-outlined text-base">cooking</span>
+                                </div>
+                                <div class="status-line h-14 w-0.5 bg-neutral-200 dark:bg-neutral-700 transition-all duration-500"></div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-lg">Food Prep Complete</p>
+                                <p class="text-sm">Our chefs finished preparing your delicious meal!</p>
+                            </div>
+                        </div>
+                        
+                        <div id="status-pack" class="flex items-start gap-4 text-text-light-secondary dark:text-text-dark-secondary">
+                            <div class="relative flex flex-col items-center">
+                                <div class="status-circle size-8 border-2 border-primary/50 text-primary rounded-full flex items-center justify-center bg-white dark:bg-neutral-900 z-10 transition-all duration-500">
+                                    <span class="material-symbols-outlined text-base">package</span>
+                                </div>
+                                <div class="status-line h-14 w-0.5 bg-neutral-200 dark:bg-neutral-700 transition-all duration-500"></div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-lg">Packaging Complete</p>
+                                <p class="text-sm">Your order is sealed and ready for the rider.</p>
+                            </div>
+                        </div>
+
+                        <div id="status-route" class="flex items-start gap-4 text-text-light-secondary dark:text-text-dark-secondary">
+                            <div class="relative flex flex-col items-center">
+                                <div class="status-circle size-8 border-2 border-primary/50 text-primary rounded-full flex items-center justify-center bg-white dark:bg-neutral-900 z-10 transition-all duration-500">
+                                    <span class="material-symbols-outlined text-base">two_wheeler</span>
+                                </div>
+                                <div class="status-line h-14 w-0.5 bg-neutral-200 dark:bg-neutral-700 transition-all duration-500"></div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-lg">Delivery En Route</p>
+                                <p class="text-sm">Your driver is heading your way!</p>
+                            </div>
+                        </div>
+
+                        <div id="status-delivered" class="flex items-start gap-4 text-text-light-secondary dark:text-text-dark-secondary">
+                            <div class="relative flex flex-col items-center">
+                                <div class="status-circle size-8 border-2 border-primary/50 text-primary rounded-full flex items-center justify-center bg-white dark:bg-neutral-900 z-10 transition-all duration-500">
+                                    <span class="material-symbols-outlined text-base">home_pin</span>
+                                </div>
+                                <div class="status-line h-0 w-0.5 bg-neutral-200 dark:bg-neutral-700 transition-all duration-500"></div>
+                            </div>
+                            <div>
+                                <p class="font-medium text-lg">Delivered</p>
+                                <p class="text-sm">Enjoy your meal!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sticky bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark p-4 border-t border-neutral-100 dark:border-white/10">
+                <button class="w-full rounded-full bg-green-600 py-4 text-center text-lg font-bold text-white transition duration-200 flex items-center justify-center gap-2" onclick="simulateDownload()">
+                    <span class="material-symbols-outlined text-xl">download</span>
+                    Download Receipt
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Global State Management
+        const STATE = {
+            cart: [],
+            customerInfo: {}, // To store customer data from checkout
+            orderId: null,
+            menuCategories: [
+                { id: 'specials', name: '🔥 Daily Specials' }, // New category
+                { id: 'ghanaian', name: '🇬🇭 Ghanaian Foods' },
+                { id: 'american', name: '🍔 American Comfort' },
+                { id: 'pizza', name: '🍕 Pizza & Pasta' },
+                { id: 'salads', name: '🥗 Salads & Bowls' },
+                { id: 'seafood', name: '🍤 Seafood Specials' }, 
+                { id: 'drinks', name: '🍹 Drinks & Cocktails' },
+                { id: 'desserts', name: '🍦 Desserts & Ice Cream' }
+            ],
+            menuItems: [
+                // --- 🔥 Daily Specials (New Combo) ---
+                { 
+                    id: 100, 
+                    category: 'specials', 
+                    name: "Fries & Chicken plus two Coka Cola (20% OFF)", 
+                    price: 120.00, 
+                    desc: "Fries & Chicken plus two Coka Cola. Today's Special Discount Applied at Checkout!", 
+                    isCombo: true,
+                    discount: 0.20, // 20% Discount
+                    imageUrl: "Red and Yellow Modern Fries and Coke Fast Food.png" 
+                },
+                // --- 🇬🇭 Ghanaian Foods (13 Items) ---
+                { id: 1, category: 'ghanaian', name: "Jollof Rice & Chicken", price: 65.00, desc: "Smoky Jollof rice served with perfectly seasoned grilled chicken.", imageUrl: "Jollof-and-Chicken.jpg" },
+                { id: 2, category: 'ghanaian', name: "Banku & Tilapia", price: 85.00, desc: "Fermented corn/cassava dough with grilled tilapia & spicy pepper sauce.", imageUrl: "Our tasty banku and tilapia dish.jpeg" },
+                { id: 3, category: 'ghanaian', name: "Fufu & Light Soup", price: 70.00, desc: "Pounded cassava/plantain dough with flavorful Light Soup and goat meat.", imageUrl: "Fufu & Light Soup.jpeg" },
+                { id: 4, category: 'ghanaian', name: "Waakye Supreme", price: 55.00, desc: "Rice & beans with stew, 'Shito', egg, gari, and wele.", imageUrl: "Waakye Supreme.jpeg" },
+                { id: 5, category: 'ghanaian', name: "Kenkey & Fried Fish", price: 60.00, desc: "Steamed fermented corn dough with fried fish and pepper sauce.", imageUrl: "Kenkey & Fried Fish.jpeg" },
+                { id: 6, category: 'ghanaian', name: "Red Red (Beans & Plantain)", price: 45.00, desc: "Hearty black-eyed beans stew served with fried ripe plantain (Kelewele).", imageUrl: "Red Red (Beans & Plantain).jpeg" },
+                { id: 7, category: 'ghanaian', name: "Tuo Zaafi (Tz) & Ayoyo", price: 75.00, desc: "Soft corn flour meal served with Ayoyo soup and beef/chicken.", imageUrl: "Tuo Zaafi (Tz) & Ayoyo.jpeg" },
+                { id: 8, category: 'ghanaian', name: "Ampesi & Palava Sauce", price: 60.00, desc: "Boiled yam or plantain served with Spinach/Kontomire stew.", imageUrl: "Ampesi & Palava Sauce.jpeg" },
+                { id: 9, category: 'ghanaian', name: "Omo Tuo & Groundnut Soup", price: 70.00, desc: "Soft rice balls served with a rich, creamy Groundnut soup.", imageUrl: "Omo Tuo & Groundnut Soup.jpeg" },
+                { id: 10, category: 'ghanaian', name: "Gari Foto (Mix)", price: 40.00, desc: "Moistened gari mixed with tomato stew, served with egg.", imageUrl: "Gari Foto (Mix).jpeg" },
+                { id: 11, category: 'ghanaian', name: "Acheke & Grilled Tilapia, Shito, Fried Plantain, and Fresh Salad.", price: 75.00, desc: "fermented cassava couscous, originally from Côte d’Ivoire but popular in Ghana and across West Africa..", imageUrl: "Acheke.jpeg" },
+                { id: 12, category: 'ghanaian', name: "Boiled Yam & Egg Stew", price: 50.00, desc: "Soft boiled yam pieces with a rich, fresh tomato and egg stew.", imageUrl: "Boiled Yam & Egg Stew.jpeg" },
+                { id: 13, category: 'ghanaian', name: "Kelewele (Side)", price: 20.00, desc: "Spicy fried ripe plantain cubes with ginger and chili.", imageUrl: "Kelewele.jpeg" },
+                
+                // --- 🍔 American Comfort (10 Items) ---
+                { id: 14, category: 'american', name: "Savory Classic Cheeseburger", price: 75.00, desc: "100% Beef patty, cheddar, lettuce, tomato, special sauce, with fries.", imageUrl: "Savory Classic Cheeseburger.jpeg" },
+                { id: 15, category: 'american', name: "Southern Fried Chicken Combo", price: 90.00, desc: "Crispy fried chicken with mashed potatoes, gravy, and coleslaw.", imageUrl: "Southern Fried Chicken Combo.jpeg" },
+                { id: 16, category: 'american', name: "BBQ Pulled Pork Sandwich", price: 80.00, desc: "Slow-cooked pork shoulder shredded and tossed in smoky BBQ sauce.", imageUrl: "BBQ Pulled Pork Sandwich.jpeg" },
+                { id: 17, category: 'american', name: "Philly Cheesesteak", price: 85.00, desc: "Thinly sliced beef steak with melted cheese on a hoagie roll.", imageUrl: "Philly Cheesesteak.jpeg" },
+                { id: 18, category: 'american', name: "Mac & Cheese (Side)", price: 35.00, desc: "Creamy baked macaroni pasta with a blend of three cheeses.", imageUrl: "Mac & Cheese.jpeg" },
+                { id: 19, category: 'american', name: "Buffalo Wings (6pc)", price: 55.00, desc: "Crispy chicken wings tossed in a tangy, spicy Buffalo sauce.", imageUrl: "Buffalo Wings.jpeg" },
+                { id: 20, category: 'american', name: "Waffle Fries & Dip", price: 30.00, desc: "Crispy, thick-cut waffle-shaped fries served with garlic aioli.", imageUrl: "Waffle Fries & Dip.jpeg" },
+                { id: 21, category: 'american', name: "Onion Rings Tower", price: 40.00, desc: "Panko-crusted onion rings, stacked high, served with ranch dressing.", imageUrl: "Onion Rings Tower.jpeg" },
+                { id: 22, category: 'american', name: "Sweet Potato Fries", price: 35.00, desc: "Baked sweet potato wedges, seasoned with sea salt.", imageUrl: "Sweet Potato Fries.jpeg" },
+                { id: 23, category: 'american', name: "Classic Hot Dog", price: 45.00, desc: "Jumbo beef frankfurter in a soft bun with mustard and relish.", imageUrl: "Classic Hot Dog.jpeg" },
+
+                // --- 🍕 Pizza & Pasta (5 Items) ---
+                { id: 24, category: 'pizza', name: "Savory Pepperoni Pizza (Large)", price: 120.00, desc: "Classic tomato base, mozzarella, and spicy pepperoni slices.", imageUrl: "Savory Pepperoni Pizza.jpeg" },
+                { id: 25, category: 'pizza', name: "Margherita Pizza (Medium)", price: 80.00, desc: "San Marzano tomatoes, fresh mozzarella, and basil.", imageUrl: "Margherita Pizza.jpeg" },
+                { id: 26, category: 'pizza', name: "Seafood Linguine", price: 110.00, desc: "Linguine pasta tossed with prawns, mussels, and creamy garlic sauce.", imageUrl: "Seafood Linguine.jpeg" },
+                { id: 27, category: 'pizza', name: "Chicken Alfredo Fettuccine", price: 95.00, desc: "Fettuccine pasta with grilled chicken in a rich Parmesan cream sauce.", imageUrl: "Chicken Alfredo Fettuccine.jpeg" },
+                { id: 28, category: 'pizza', name: "Spaghetti Bolognese", price: 85.00, desc: "Spaghetti topped with a rich, slow-cooked meat and tomato ragu.", imageUrl: "Spaghetti Bolognese.jpeg" },
+
+                // --- 🥗 Salads & Bowls (4 Items) ---
+                { id: 29, category: 'salads', name: "Cobb Salad", price: 50.00, desc: "Mixed greens, chicken, bacon, egg, avocado, tomatoes, blue cheese.", imageUrl: "Cobb Salad.jpeg" },
+                { id: 30, category: 'salads', name: "Caesar Salad with Grilled Prawns", price: 65.00, desc: "Romaine lettuce, croutons, parmesan, classic Caesar dressing.", imageUrl: "Caesar Salad with Grilled Prawns.jpeg" },
+                { id: 31, category: 'salads', name: "Quinoa Power Bowl", price: 70.00, desc: "Quinoa base with roasted vegetables, chickpeas, and lemon vinaigrette.", imageUrl: "Quinoa Power Bowl.jpeg" },
+                { id: 32, category: 'salads', name: "Garden Side Salad", price: 25.00, desc: "Fresh seasonal greens, carrots, cucumbers, and cherry tomatoes.", imageUrl: "Garden Side Salad.jpeg" },
+                
+                // --- 🍤 Seafood Specials (3 Items) ---
+                { id: 33, category: 'seafood', name: "Grilled Whole Tilapia", price: 100.00, desc: "Freshly grilled whole Tilapia, served with spicy red pepper sauce and side salad.", imageUrl: "Grilled Whole Tilapia.jpeg" },
+                { id: 34, category: 'seafood', name: "Prawn Skewers (6pc)", price: 115.00, desc: "Large grilled prawns marinated in butter and herbs.", imageUrl: "Prawn Skewers.jpeg" },
+                { id: 35, category: 'seafood', name: "Fish and Chips (Continental)", price: 90.00, desc: "Battered white fish fillet with thick-cut fries and tartar sauce.", imageUrl: "Fish and Chips.jpeg" },
+
+                // --- 🍹 Drinks & Cocktails (5 Items) ---
+                { id: 36, category: 'drinks', name: "Fresh Pineapple Juice", price: 20.00, desc: "Freshly squeezed, chilled Ghanaian pineapple juice.", imageUrl: "Fresh Pineapple Juice.jpeg" },
+                { id: 37, category: 'drinks', name: "Zobo (Hibiscus Drink)", price: 15.00, desc: "A sweet, tangy local refreshment made from dried hibiscus flowers.", imageUrl: "Zobo (Hibiscus Drink).jpeg" },
+                { id: 38, category: 'drinks', name: "Chapman Cocktail (Non-Alc)", price: 35.00, desc: "A refreshing non-alcoholic blend with bitters, cucumber, and fruit.", imageUrl: "Chapman Cocktail (Non-Alc).jpeg" },
+                { id: 39, category: 'drinks', name: "Fine Merlot (Bottle)", price: 150.00, desc: "A full-bodied red wine from the Western Cape.", imageUrl: "Fine Merlot.jpeg" },
+                { id: 40, category: 'drinks', name: "Club Beer", price: 15.00, desc: "Cold local lager (must be 18+ to order).", imageUrl: "Club Beer.jpeg" },
+                
+                // --- 🍦 Desserts & Ice Cream (3 Items) ---
+                { id: 41, category: 'desserts', name: "Chocolate Lava Cake", price: 40.00, desc: "Warm, gooey chocolate cake with a melting center, served with vanilla ice cream.", imageUrl: "Chocolate Lava Cake.jpeg" },
+                { id: 42, category: 'desserts', name: "Assorted Ice Cream Scoop", price: 25.00, desc: "Two scoops of your choice: Vanilla, Chocolate, or Strawberry.", imageUrl: "Assorted Ice Cream Scoop.jpeg" },
+                { id: 43, category: 'desserts', name: "Fried Plantain Fritters", price: 30.00, desc: "Sweet plantain fritters dusted with cinnamon sugar.", imageUrl: "Fried Plantain Fritters.jpeg" }
+            ],
+            deliveryFee: 10.00,
+            // Driver Data for Rotation
+            driverPool: [
+                { name: "Kojo Mensah", color: "Blue & Black Bike", plate: "GW-99-1234" },
+                { name: "Afua Serwaa", color: "Yellow Scooter", plate: "AS-12-7890" },
+                { name: "Kwame Ofori", color: "Red & White Bike", plate: "GR-23-4567" },
+                { name: "Adwoa Boatemaa", color: "Black Motorcycle", plate: "BT-44-5678" }
+            ],
+            lastDriverIndex: -1,
+            assignedDriver: {} // To store the assigned driver for the receipt
+        };
+
+        // --- DELIVERY STAGES (TIMELINE FIX & TIME CHANGE) ---
+        // Total duration is 60 seconds (1 minute simulation)
+        const deliveryStages = [
+            { name: "Order Confirmed", duration: 10, id: 'status-confirm' }, // 10 seconds
+            { name: "Food Prep Complete", duration: 20, id: 'status-prep' }, // 20 seconds
+            { name: "Packaging Complete", duration: 10, id: 'status-pack' }, // 10 seconds
+            { name: "Delivery En Route", duration: 15, id: 'status-route' }, // 15 seconds
+            { name: "Delivered", duration: 5, id: 'status-delivered' } // 5 seconds
+        ];
+        
+        let currentStageIndex = 0;
+        let trackingInterval = null; // To hold the timeout for the next stage
+
+        // --- VIEW MANAGEMENT ---
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+
+            // Reset scroll position to top when changing views
+            window.scrollTo(0, 0);
+
+            if (viewId === 'menu-view' || viewId === 'dashboard-view') {
+                renderMenuCategories();
+                renderMenuItems();
+            }
+            if (viewId === 'checkout-view') {
+                updateCheckoutView();
+            }
+            if (viewId === 'order-tracking-view') {
+                startOrderTracking();
+            }
+        }
+
+        // --- DASHBOARD FUNCTIONS ---
+        function toggleDescription() {
+            const fullDesc = document.getElementById('full-description-content');
+            const readMore = document.getElementById('read-more-link');
+            if (fullDesc.classList.contains('hidden')) {
+                fullDesc.classList.remove('hidden');
+                readMore.textContent = 'Read less';
+            } else {
+                fullDesc.classList.add('hidden');
+                readMore.textContent = 'Read more';
+            }
+        }
+
+        // --- MENU RENDERING (IMAGE INTEGRATION) ---
+        function renderMenuCategories() {
+            const categoriesContainer = document.getElementById('menu-categories');
+            categoriesContainer.innerHTML = ''; // Clear previous
+
+            STATE.menuCategories.forEach(category => {
+                const categoryBtn = document.createElement('a');
+                categoryBtn.href = `#${category.id}`;
+                categoryBtn.className = 'flex h-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary px-4 font-medium text-sm leading-normal transition duration-200 hover:bg-primary hover:text-white dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/70 dark:hover:text-white';
+                categoryBtn.textContent = category.name;
+                categoriesContainer.appendChild(categoryBtn);
+            });
+        }
+
+        function renderMenuItems() {
+            const menuList = document.getElementById('menu-items-list');
+            menuList.innerHTML = ''; // Clear previous
+
+            STATE.menuCategories.forEach(category => {
+                const categorySection = document.createElement('section');
+                categorySection.id = category.id;
+                categorySection.className = 'menu-category-section space-y-4 pt-4';
+
+                categorySection.innerHTML = `
+                    <h2 class="text-2xl font-bold sticky top-[64px] bg-background-light dark:bg-background-dark py-2">${category.name}</h2>
+                    <div class="space-y-4" id="list-${category.id}"></div>
+                `;
+                menuList.appendChild(categorySection);
+
+                const categoryItems = STATE.menuItems.filter(item => item.category === category.id);
+                const listContainer = document.getElementById(`list-${category.id}`);
+
+                categoryItems.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex items-start gap-4 p-4 bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-neutral-100 dark:border-neutral-800';
+                    
+                    let priceDisplay = `GHS ${item.price.toFixed(2)}`;
+                    let discountBadge = '';
+                    
+                    if (item.isCombo) {
+                        const originalPrice = 150.00; // Calculated based on components (2x Jollof: 130 + 2x Zobo: 30 = 160. Discounted to 120, so 40 off - adjusted the combo price to 120)
+                        
+                        priceDisplay = `<span class="text-red-500 font-bold">GHS ${item.price.toFixed(2)}</span> <span class="text-sm line-through text-text-light-secondary dark:text-text-dark-secondary ml-2">GHS ${originalPrice.toFixed(2)}</span>`;
+                        discountBadge = `<span class="bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded-full absolute top-[-10px] right-[-10px] shadow-lg">DAILY DEAL!</span>`;
+                    }
+
+                    itemElement.innerHTML = `
+                        <div class="relative">
+                            <img src="${item.imageUrl}" alt="${item.name}" class="size-20 shrink-0 object-cover rounded-lg aspect-square border border-neutral-200 dark:border-neutral-700"/>
+                            ${discountBadge}
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-bold">${item.name}</h3>
+                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary mt-1">${item.desc}</p>
+                            <p class="text-primary text-lg font-bold mt-2">${priceDisplay}</p>
+                        </div>
+                        <button class="flex shrink-0 items-center justify-center rounded-full bg-primary text-white size-10 text-xl" 
+                                onclick="addToCart(${item.id})">
+                            <span class="material-symbols-outlined text-base">add</span>
+                        </button>
+                    `;
+                    listContainer.appendChild(itemElement);
+                });
+            });
+        }
+
+        // --- CART LOGIC ---
+        function updateCartUI() {
+            const totalItems = STATE.cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartC2A = document.getElementById('cart-c2a');
+            
+            document.getElementById('cart-count').textContent = totalItems;
+            document.getElementById('c2a-item-count').textContent = totalItems;
+            
+            if (totalItems > 0) {
+                cartC2A.classList.remove('hidden');
+            } else {
+                cartC2A.classList.add('hidden');
+            }
+        }
+
+        function addToCart(itemId) {
+            const existingItem = STATE.cart.find(item => item.id === itemId);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                const menuItem = STATE.menuItems.find(item => item.id === itemId);
+                STATE.cart.push({ ...menuItem, quantity: 1 });
+            }
+            updateCartUI();
+            console.log(`Added item ${itemId}. Cart:`, STATE.cart);
+        }
+
+        function updateItemQuantity(itemId, change) {
+            const itemIndex = STATE.cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                STATE.cart[itemIndex].quantity += change;
+                if (STATE.cart[itemIndex].quantity <= 0) {
+                    STATE.cart.splice(itemIndex, 1); // Remove item if quantity is 0 or less
+                }
+            }
+            updateCartUI();
+            updateCheckoutView(); // Re-render checkout view
+        }
+
+        // --- CHECKOUT LOGIC ---
+        function updatePaymentText(method) {
+            const total = calculateTotal().total;
+            const buttonText = document.getElementById('place-order-button-text');
+            let paymentMethodText = method === 'COD' ? '(COD)' : '(Prepay)';
+            buttonText.textContent = `Place Order - GHS ${total.toFixed(2)} ${paymentMethodText}`;
+        }
+
+        function calculateTotal() {
+            let subtotal = STATE.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discount = 0;
+            
+            // Calculate combo discount
+            const comboItem = STATE.cart.find(item => item.isCombo);
+            if (comboItem) {
+                discount = (comboItem.price * comboItem.discount) * comboItem.quantity;
+            }
+
+            const subtotalAfterDiscount = subtotal - discount;
+            const deliveryFee = STATE.deliveryFee;
+            const total = subtotalAfterDiscount + deliveryFee;
+            
+            return { subtotal, discount, subtotalAfterDiscount, total };
+        }
+
+        function updateCheckoutView() {
+            const summaryContainer = document.getElementById('checkout-cart-summary');
+            summaryContainer.innerHTML = ''; // Clear previous
+
+            const totals = calculateTotal();
+            const placeOrderButton = document.getElementById('place-order-button-text');
+            
+            // Show/Hide Discount Row
+            const discountRow = document.getElementById('summary-discount');
+            if (totals.discount > 0) {
+                discountRow.classList.remove('hidden');
+                document.getElementById('summary-discount-amount').textContent = `- GHS ${totals.discount.toFixed(2)}`;
+            } else {
+                discountRow.classList.add('hidden');
+            }
+
+
+            if (STATE.cart.length === 0) {
+                summaryContainer.innerHTML = '<p class="text-center text-red-500">Your cart is empty. Please add items from the menu.</p>';
+                placeOrderButton.disabled = true;
+                placeOrderButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                STATE.cart.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex items-center justify-between p-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg';
+                    let priceText = item.isCombo ? `Discounted Price` : `GHS ${item.price.toFixed(2)}`;
+
+                    itemElement.innerHTML = `
+                        <div class="flex-1">
+                            <p class="font-medium">${item.name}</p>
+                            <p class="text-sm text-text-light-secondary dark:text-text-dark-secondary">${priceText} | Total: GHS ${(item.price * item.quantity).toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button class="size-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-lg" 
+                                    onclick="updateItemQuantity(${item.id}, -1)">-</button>
+                            <span class="font-bold">${item.quantity}</span>
+                            <button class="size-6 bg-primary text-white rounded-full flex items-center justify-center text-lg" 
+                                    onclick="updateItemQuantity(${item.id}, 1)">+</button>
+                        </div>
+                    `;
+                    summaryContainer.appendChild(itemElement);
+                });
+
+                document.getElementById('summary-subtotal').textContent = `GHS ${totals.subtotalAfterDiscount.toFixed(2)}`;
+                document.getElementById('summary-delivery-fee').textContent = `GHS ${STATE.deliveryFee.toFixed(2)}`;
+                document.getElementById('summary-total').textContent = `GHS ${totals.total.toFixed(2)}`;
+                
+                const selectedPayment = document.querySelector('input[name="payment-method"]:checked') ? document.querySelector('input[name="payment-method"]:checked').value : 'COD';
+                updatePaymentText(selectedPayment);
+                placeOrderButton.disabled = false;
+                placeOrderButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function handleOrderPlacement() {
+            if (STATE.cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            const name = document.getElementById('customer-name').value;
+            const address = document.getElementById('customer-address').value;
+            const location = document.getElementById('customer-location').value;
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+
+            if (!name || !address || !location) {
+                alert("Please fill in your name, address, and location for delivery.");
+                return;
+            }
+
+            // Store customer info and totals for receipt
+            STATE.customerInfo = { name, address, location, paymentMethod };
+            STATE.orderId = 'ORD-' + Math.floor(Math.random() * 900000 + 100000);
+            
+            document.getElementById('tracking-order-id').textContent = `#${STATE.orderId}`;
+
+            // Assign driver immediately for tracking
+            getAndDisplayDriver();
+
+            showView('order-tracking-view');
+        }
+        
+        // --- DELIVERY TRACKING LOGIC (GREEN TICK FIX) ---
+
+        function getAndDisplayDriver() {
+            // Rotate to the next driver index
+            STATE.lastDriverIndex = (STATE.lastDriverIndex + 1) % STATE.driverPool.length;
+            const assignedDriver = STATE.driverPool[STATE.lastDriverIndex];
+            STATE.assignedDriver = assignedDriver; // Store in state for receipt
+            
+            // Update the HTML elements
+            document.getElementById('driver-name').textContent = assignedDriver.name;
+            document.getElementById('bike-color').textContent = assignedDriver.color;
+            document.getElementById('plate-number').textContent = assignedDriver.plate;
+        }
+        
+        function updateStageText(stageId, isDone) {
+            const statusElement = document.getElementById(stageId);
+            if (statusElement) {
+                if (isDone) {
+                    statusElement.classList.add('status-done');
+                    statusElement.classList.remove('text-text-light-secondary', 'dark:text-text-dark-secondary');
+                    // Ensure the main title is black/white and bold
+                    const titleEl = statusElement.querySelector('p:first-child');
+                    titleEl.classList.add('font-bold', 'text-text-light-primary', 'dark:text-text-dark-primary');
+                } else {
+                    statusElement.classList.remove('status-done');
+                    statusElement.classList.add('text-text-light-secondary', 'dark:text-text-dark-secondary');
+                    const titleEl = statusElement.querySelector('p:first-child');
+                    titleEl.classList.remove('font-bold', 'text-text-light-primary', 'dark:text-text-dark-primary');
+                }
+            }
+        }
+        
+        function updateDeliveryTimeline() {
+            if (currentStageIndex < deliveryStages.length) {
+                const stage = deliveryStages[currentStageIndex];
+                
+                // 1. Mark the current stage as active/done
+                updateStageText(stage.id, true);
+                
+                // 2. Update the main status text at the top
+                document.getElementById('tracking-status-text').textContent = stage.name;
+
+                // 3. Handle special stages
+                if (stage.id === 'status-route') {
+                    document.getElementById('driver-details-box').classList.remove('hidden');
+                }
+                
+                if (stage.id === 'status-delivered') {
+                    document.getElementById('tracking-delivery-time').textContent = "Order Complete! Enjoy your meal!";
+                    // Stop the tracking sequence
+                    return; 
+                }
+
+                // 4. Set a timeout to proceed to the next stage
+                const delayInMilliseconds = stage.duration * 1000;
+                
+                trackingInterval = setTimeout(() => {
+                    currentStageIndex++;
+                    updateDeliveryTimeline();
+                }, delayInMilliseconds);
+            }
+        }
+
+        function startOrderTracking() {
+            // Clear any existing interval just in case
+            if (trackingInterval) {
+                clearTimeout(trackingInterval);
+            }
+            
+            // Reset status for a new order
+            currentStageIndex = 0;
+            document.getElementById('driver-details-box').classList.add('hidden');
+            document.getElementById('tracking-delivery-time').textContent = "Estimated Arrival: ~60 seconds (Simulated)";
+
+            // Reset visual elements
+            document.querySelectorAll('#order-tracking-view [id^="status-"]').forEach(el => {
+                updateStageText(el.id, false);
+            });
+
+            // Start the simulation
+            updateDeliveryTimeline();
+        }
+        
+        // --- RECEIPT DOWNLOAD LOGIC (CLEANUP: GHS change) ---
+        function simulateDownload() {
+            const totals = calculateTotal();
+            const date = new Date().toLocaleString();
+            
+            let receiptContent = `
+=============================================
+         TASTYTRAIL RESTAURANT RECEIPT
+=============================================
+Order ID: ${STATE.orderId}
+Date: ${date}
+---------------------------------------------
+CUSTOMER DETAILS
+---------------------------------------------
+Name: ${STATE.customerInfo.name}
+Delivery: ${STATE.customerInfo.address}, ${STATE.customerInfo.location}
+Payment: ${STATE.customerInfo.paymentMethod === 'COD' ? 'Cash On Delivery' : 'Mobile Money / Card'}
+---------------------------------------------
+ORDER ITEMS
+---------------------------------------------
+`;
+            
+            STATE.cart.forEach(item => {
+                const itemTotal = (item.price * item.quantity).toFixed(2);
+                let priceDetails = `Price: GHS ${item.price.toFixed(2)}/ea | Total: GHS ${itemTotal}`;
+
+                if (item.isCombo) {
+                    priceDetails = `Combo Price: GHS ${item.price.toFixed(2)}/ea | Total: GHS ${itemTotal}`;
+                }
+
+                receiptContent += `
+* ${item.name} (x${item.quantity})
+  ${priceDetails}
+`;
+            });
+            
+            let discountLine = '';
+            if (totals.discount > 0) {
+                discountLine = `Combo Discount: - GHS ${totals.discount.toFixed(2)}`;
+            }
+
+
+            receiptContent += `
+---------------------------------------------
+SUMMARY
+---------------------------------------------
+Subtotal:      GHS ${totals.subtotal.toFixed(2)}
+${discountLine}
+Delivery Fee:  GHS ${STATE.deliveryFee.toFixed(2)}
+---------------------------------------------
+TOTAL AMOUNT:  GHS ${totals.total.toFixed(2)}
+=============================================
+DELIVERY RIDER DETAILS
+=============================================
+Rider: ${STATE.assignedDriver.name}
+Vehicle: ${STATE.assignedDriver.color}
+Plate No.: ${STATE.assignedDriver.plate}
+=============================================
+THANK YOU FOR YOUR ORDER!
+`;
+
+            // Create a Blob containing the receipt data
+            const blob = new Blob([receiptContent], { type: 'text/plain' });
+            
+            // Create a link element
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `TastyTrail_Order_${STATE.orderId}.txt`;
+            
+            // Append link to the body, click it, and remove it
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Clear the cart now that the receipt is downloaded
+            STATE.cart = [];
+            STATE.orderId = null;
+            updateCartUI(); // Update dashboard cart count to 0
+            
+            alert(`Receipt for Order downloaded successfully!`);
+        }
+
+        function handleSignUp() {
+            // Simple alert for simulation
+            alert("Sign Up successful! Redirecting to dashboard...");
+            showView('dashboard-view');
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set dashboard fee display
+            document.getElementById('dashboard-delivery-fee').textContent = STATE.deliveryFee.toFixed(2);
+            
+            // Pre-select COD on load and update text
+            updatePaymentText('COD'); 
+            
+            // START THE APP!
+            showView('onboarding-view'); 
+        });
+    </script>
+</body>
+</html>
