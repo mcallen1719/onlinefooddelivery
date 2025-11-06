@@ -228,7 +228,7 @@
                     <div class="flex size-10 shrink-0 items-center justify-center text-primary">
                         <span class="material-symbols-outlined" style="font-size: 28px;">restaurant_menu</span>
                     </div>
-                    <h1 class="text-xl font-bold">TastyTrail Menu</h1>
+                    <h1 class="text-xl font-bold">DineCraft Menu</h1>
                     <div class="flex size-10 shrink-0 items-center justify-center text-primary cursor-pointer" onclick="showView('onboarding-view')">
                         <span class="material-symbols-outlined" style="font-size: 24px;">logout</span>
                     </div>
@@ -961,7 +961,7 @@ THANK YOU FOR YOUR ORDER!
             // Create a link element
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `TastyTrail_Order_${STATE.orderId}.txt`;
+            a.download = `DINECRAFT_Order_${STATE.orderId}.txt`;
             
             // Append link to the body, click it, and remove it
             document.body.appendChild(a);
@@ -995,6 +995,4 @@ THANK YOU FOR YOUR ORDER!
         });
     </script>
 </body>
-
 </html>
-
